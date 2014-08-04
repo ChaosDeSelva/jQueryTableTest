@@ -1,0 +1,134 @@
+<!--
+@author: Jacob Lashley
+@description: jQuery Table Puzzle
+@since: August 4, 2014
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Korean text failed to rendered without this content type  -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>jQuery Table Puzzle</title>
+    <style>
+        table {
+           border: 1px solid red;
+        }
+        
+        th, td {
+           border: 1px solid blue;
+           padding: 5px;
+        }
+        
+        /* Change table rows background color depending on even and odd rows */
+        tr:nth-child(even) {
+            background: #bdbdbd;
+        }
+        
+        tr:nth-child(odd) {
+            background: #e9e9e9;
+        }
+        
+        /* Rotate Text for Hello World Div */
+        .vtext {
+            -webkit-transform: rotate(-90deg);
+            -moz-transform: rotate(-90deg);
+            -ms-transform: rotate(-90deg);
+            -o-transform: rotate(-90deg);
+            transform: rotate(-90deg);
+            
+            position: absolute;
+        }
+    </style>
+
+    <!-- Include jQuery -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <!-- Align Table Center -->
+    <div id="myTable" align="center"></div>
+    
+    <!-- Hello World Panel -->
+    <div id="helloWorldPanel" class="vtext">Hello World</div>
+</body>
+    
+<script type="application/javascript">
+    $(document).ready(function(){
+        
+        /**
+         * This funciton will generate the random data to fill the table with.
+         *
+         * @param  length The amount of characters to randomly generate 
+         * @return The 15 randomly generated characters
+         */
+        function randomString(length) {
+            //Alphanumeric characters (excluding vowels and numbers 0 and 1)
+            var mask = 'bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ23456789';
+            var result = '';
+            
+            //Generate data to populate the table
+            for (var i = length; i > 0; --i) {
+                result += mask[Math.round(Math.random() * (mask.length - 1))];
+            }
+
+            return result;
+        }
+        
+        /**
+         * This will update the position of the hello world panel.
+         * It is called on document load and on the window resize event.
+         */
+        function positionHelloWorldPanel() {
+            //Set the css of the panel
+            $("#helloWorldPanel").css({
+                "top": "40px",
+                "left": ($table.position().left - 40)
+            });
+        };
+
+        //Create a table (5 columns, 40 rows, 1 x row header, 1 x column header)
+        var $table = $('<table></table>');
+
+        //Generate rows for the table
+        for (var r = 0; r < 40; r++) {
+            
+            //Build and add row
+            var $row = $('<tr></tr>');
+            $table.append($row);
+
+            //Generate columns for the row
+            for (var c = 0; c < 5; c++) {
+                
+                //Get Random Data for the table cell
+                var randomText = randomString(15);
+                var $column = $('<td></td>').text(randomText);
+
+                //If the first row or first of column make it a header for the table, 1 x row header, 1 x column header
+                if (r === 0 || c === 0) {
+                    $column = $('<th></th>').text(randomText);
+                }
+
+                //Append the column to the row
+                $row.append($column);
+            }
+        }
+
+        //The certiera for this said (Cell (row=6; column=15) must contain special text as follows) I assumed this was a typo and went to column 5 since 15 does not exisit.
+        //The values are negated for TD because it needs to ignore th within the row and column header during the search.
+        $table.find('tr:eq(6) td:eq(3)').text(' 어떤 Algorithms <my name is "Jacob">');
+
+        //Add the table to the website via id of the div to hold the table.
+        $('#myTable').append($table);
+
+        //Set the initial location on page load.
+        positionHelloWorldPanel();
+
+        //If window is resized then update the location of the hello world panel
+        $(window).resize(function() {
+            positionHelloWorldPanel();
+        });
+
+    });
+</script>
+</html>
